@@ -693,7 +693,10 @@ img{
                 errorMessageElement.textContent = "Invalid username or password";
             }
         }
-    
+        function home(){
+            window.location.href = "/";
+
+        }
         // Check if the user is already logged in when the page loads
         {% comment %} window.onload = function() {
             var sessionToken = localStorage.getItem("sessionToken");
@@ -709,11 +712,7 @@ img{
             return Math.random().toString(36).substr(2);
         }
 
-        function (){
-            window.location.href = "";
 
-
-        }
 
 
         window.addEventListener('popstate', function(event) {
