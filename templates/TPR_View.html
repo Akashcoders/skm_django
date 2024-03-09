@@ -1,0 +1,197 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Page</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .logo{
+            margin: 2%;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #cde5fb; /* Light Blue */
+            margin: 0;
+            padding: 0;
+         
+        }
+
+        .container {
+            background-color: #ffffff; /* White */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 800px;
+            margin: auto;
+            overflow-x: auto;
+            position: relative;
+            margin: auto;
+            margin-top:5%;
+        }
+
+        .search-icon {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        #searchInput {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        .srch-btn,
+        .tpr-add-btn {
+            text-decoration: none;
+            color: #fff;
+            background: linear-gradient(to right, #0080ff, #0066cc); /* Gradient Blue */
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .tpr-add-btn {
+            margin-left: 10px; /* Add spacing between buttons */
+        }
+
+        .srch-btn:hover,
+        .tpr-add-btn:hover {
+            background: linear-gradient(to right, #0066cc, #004080); /* Darker Gradient Blue */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th,
+        td {
+            border: 1px solid #dee2e6; /* Light Blue Gray */
+            padding: 15px;
+            text-align: left;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        th {
+            background-color: #0080ff; /* Gradient Blue */
+            color: #fff;
+            cursor: pointer;
+        }
+
+        tbody tr:hover {
+            background-color: #f2f9ff; /* Lighter Blue */
+        }
+
+        .pdf-view,
+        .delete-row {
+            color: #0080ff; /* Gradient Blue */
+            cursor: pointer;
+            text-decoration: underline;
+            transition: color 0.3s;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media only screen and (max-width: 600px) {
+            th,
+            td {
+                font-size: 14px;
+                padding: 12px;
+            }
+
+            .srch-btn,
+            .tpr-add-btn {
+                padding: 8px 12px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <!-- Add image at the top-left corner outside the container -->
+    <div class="logo">
+        <img src="{%static 'SKMLOGO1.png'  %}">
+
+
+    </div>
+    <div class="container">
+        <div class="search-icon">
+            <input type="text" id="searchInput" placeholder="Search...">
+            <button onclick="searchFunction()" class="srch-btn">Search</button>
+            <!-- Remove the 'Add TPR' button for employee view -->
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>TPR Number</th>
+                    <th>Segment</th>
+                    <th>Customer</th>
+                    <th>PDF View</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in form_data %}
+                <tr>
+                    <td>{{ data.TPR_NO }}</td>
+                    <td>{{ data.segment }}</td>
+                    <td>{{ data.customer }}</td>
+                    <td>
+                        <!-- PDF View Option -->
+                        <a href="{{ data.pdf_file.url }}" target="_blank" class="pdf-view">View PDF</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function searchFunction() {
+            const searchInput = document.getElementById("searchInput").value.toLowerCase();
+            const rows = document.querySelectorAll("table tbody tr");
+
+            rows.forEach(row => {
+                const cells = row.getElementsByTagName("td");
+                let rowShouldBeVisible = false;
+
+                if (searchInput === "") {
+                    // Show all rows when the search input is empty
+                    rowShouldBeVisible = true;
+                } else {
+                    Array.from(cells).forEach(cell => {
+                        const cellText = cell.textContent.toLowerCase();
+                        if (cellText.includes(searchInput)) {
+                            rowShouldBeVisible = true;
+                        }
+                    });
+                }
+
+                // Toggle the 'hidden' class based on visibility
+                row.classList.toggle("hidden", !rowShouldBeVisible);
+            });
+        }
+    </script>
+
+</body>
+
+</html>

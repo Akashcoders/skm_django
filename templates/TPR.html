@@ -1,0 +1,235 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TPR Form</title>
+  <style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #cde5fb; /* Light Blue */
+        margin: 0;
+        padding: 0;
+      
+        height: 90vh;
+    }
+
+    form {
+        max-width: 400px;
+        width: 100%;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        margin: auto;
+        margin-top:5%;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        text-align: left;
+        transition: box-shadow 0.3s ease-in-out, background-color 0.3s ease-in-out;
+    }
+
+    form:hover {
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+        background-color: #f0f5ff; /* Slightly Darker Blue */
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #0066cc; /* Medium Blue */
+        text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333; /* Dark Gray */
+        transition: color 0.3s ease-in-out;
+    }
+
+    select,
+    input,
+    #fileInput {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 16px;
+        box-sizing: border-box;
+        border: 1px solid #99a3af; /* Lighter Blue Gray */
+        border-radius: 6px;
+        transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+
+    select:focus,
+    input:focus,
+    #fileInput:focus {
+        border-color: #0066cc; /* Medium Blue */
+        box-shadow: 0 0 5px rgba(0, 102, 204, 0.6); /* Darker Medium Blue */
+    }
+
+    select {
+        max-height: 120px;
+        overflow-y: auto;
+    }
+
+    button {
+        background: linear-gradient(to right, #0080ff, #0066cc); /* Gradient Blue */
+        color: #fff;
+        padding: 14px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-right: 10px;
+        transition: background 0.3s ease-in-out;
+    }
+
+    button:hover {
+        background: linear-gradient(to right, #0066cc, #004080); /* Darker Gradient Blue */
+    }
+
+    button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+
+    button:disabled:hover {
+        background-color: #ccc;
+    }
+    .tpr-btn{
+      text-decoration: none; 
+      color: white; 
+    }
+    .cont1 {
+      display: flex;
+      justify-content: space-between; /* Aligns items to the right */
+      margin:2%;
+  
+    }
+      
+  #logoutButton {
+      background-color: #f44336; /* Red background color */
+      color: white; /* White text color */
+      padding: 10px 20px; /* Padding */
+      border: none; /* No border */
+      border-radius: 5px; /* Rounded corners */
+      cursor: pointer; /* Cursor style */
+      height:3%;
+      width:6%;
+    
+    }
+    
+  #logoutButton:hover {
+      background-color: #df3a2e; /* Darker red background color on hover */
+    }
+
+</style>
+</head>
+<body>
+  <div  class="cont1">
+    <img src="{%static 'SKMLOGO1.png'  %}">
+    <button id="logoutButton" onclick="logout()">Logout</button>
+
+</div>
+  <div class="body" >
+
+    <form class="show" id="tprForm" method = "POST" action="" enctype="multipart/form-data">
+      {% csrf_token %}
+      <h2>TPR Form</h2>
+      
+      <!-- TPR Number Input -->
+      <label for="TPR_NO">TPR Number:</label>
+      <input type="text" id="tprno" name="TPR_NO" required>
+      
+      <!-- Segment Selection -->
+      {% comment %} <h2>Segments</h2> {% endcomment %}
+      <label for="segment">Select Segment:</label>
+      <select id="segment" name="segment" required>
+        <option value="auto">Auto</option>
+        <option value="galva">Galva</option>
+        <option value="lne">L&E</option>                           
+        <option value="peb">PEB</option>
+        <option value="others">Others</option>
+        <!-- Add more options as needed -->
+      </select>
+
+      <!-- Customer Selection -->
+      {% comment %} <h2>Customers</h2> {% endcomment %}
+      <label for="customer">Select Customer:</label>
+      <select id="customers" name="customer" required>
+        
+        <option value="polycab">Polycab</option>
+        <option value="tata">Tata</option>
+        <option value="bajaj">Bajaj</option>
+        <option value="jsw">JSW</option>
+        <option value="JCB">JCB</option>
+        <option value="Mahindra">Mahindra</option>
+        <option value="godrej">Godrej</option>
+        <!-- Add more options as needed -->
+      </select>
+
+      <!-- PDF Upload -->
+      {% comment %} <h2>PDF</h2> {% endcomment %}
+      <label for="pdf">Add PDF:</label>
+      <input type="file" id="fileInput" name="pdf_file" accept=".pdf" required>
+
+      <!-- Submit and View Buttons -->
+      <button type="submit" id="submitBtn" onclick="refreshPage()">Submit</button>
+      {% comment %} <a href="tpr" class="tpr-btn">TPR View</a> {% endcomment %}
+      <button type="button" style="background: linear-gradient(to right, #004080, #002855);" onclick="tpr()">TPR View</button>
+
+    </form>
+  </div>
+
+
+
+</body>
+<script>
+  window.onload = function() {
+    var sessionToken = localStorage.getItem("sessionToken");
+    if (!sessionToken) {
+        // Redirect to the login page if not logged in
+        window.location.href = "/login";
+        // Clear browser history
+        history.replaceState(null, null, '/login'); 
+      }
+};
+
+// Function to handle logout
+function logout() {
+    // Clear session token from localStorage
+    localStorage.removeItem("sessionToken");
+    // Redirect to the login page
+    window.location.href = "";
+    // Add logout entry to browser history
+    history.replaceState(null, null, ''); 
+}
+function tpr(){
+  window.location.href = "tpr";
+
+}
+
+
+
+
+
+window.addEventListener('popstate', function(event) {
+  // Check if the user is navigating back
+  if (event.state && event.state.refresh) {
+      // Reload the page
+      location.reload();
+  }
+});
+
+// Function to add refresh state to history when navigating away
+function addRefreshState() {
+  history.pushState({refresh: true}, document.title);
+}
+
+// Example usage - You can call this function when the user clicks a link
+document.getElementById('/login/TPR').addEventListener('click', function() {
+  addRefreshState();
+  // Additional logic to navigate to the desired page
+});
+</script>
+</html>
+
