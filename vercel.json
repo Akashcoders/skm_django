@@ -1,9 +1,7 @@
+
+
 {
-   
-        "routes":[
-            {
-                "src":"/(.*)",
-                "dest":"skm_django/wsgi.py"
-            }
-        ]
-}
+    "routes": [
+      { "src": "/(.*)", "dest": "skm_django/wsgi.py" }
+    ]
+  }
