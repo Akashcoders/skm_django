@@ -36,6 +36,46 @@
             margin-top:5%;
         }
 
+        body::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.5); /* White with 0.5 opacity */
+            z-index: -1;
+        }
+
+        body::before {
+            content: "";
+            background-image: url({%static 'Steels.PNG'  %});
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            filter: blur(5px); /* Optional: Apply a slight blur to the background image */
+        }
+
+        .container {
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 800px;
+            margin: auto;
+            overflow-x: auto;
+            position: relative;
+            margin-top: 5%;
+            background-color: rgba(148, 209, 230, 0.5); /* Very light blue with 0.5 opacity */
+            z-index: 1; /* Ensure content appears above the background */
+        }
+
         .search-icon {
             display: flex;
             align-items: center;
