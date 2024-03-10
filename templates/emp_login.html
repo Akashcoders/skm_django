@@ -1,5 +1,5 @@
-{% load static %}
 
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -272,8 +272,7 @@
 
         <div class="form">
             <!-- Image -->
-            <img src="img\authentication.svg" alt="" class="form__img">
-
+            <img src="{%static 'SKMLOGO1.png'  %}">
             <!-- Form Content -->
             <div class="form__content">
                 <h1 class="form__title">Welcome</h1>
@@ -299,6 +298,7 @@
                 </div>
                 <!-- Login Button -->
                 <button class="btn" onclick="login()">Login</button>
+                <button class="btn" onclick="home()">Home</button>
                 <!-- Error Message -->
                 <p id="error-message" style="color: red;"></p>
             </div>
@@ -306,9 +306,7 @@
     </div>
 
     <!-- JavaScript -->
-    
     <script>
-        // Function to handle login
         function login() {
             var username = document.getElementById("username").value;
             var password = document.getElementById("password").value;
@@ -329,49 +327,56 @@
             var errorMessageElement = document.getElementById("error-message");
             if (isValidUser) {
                 errorMessageElement.textContent = "Login successful!";
-                // Store login status and credentials in sessionStorage
-                sessionStorage.setItem("loggedIn", "true");
-                sessionStorage.setItem("username", username);
-                sessionStorage.setItem("password", password);
+                // Generate and store a session token
+                var token = generateToken();
+                localStorage.setItem("sessionToken", token);
                 // Redirect to the next page after successful login
-                window.location.href = "tpr";
+                window.location.href = "/emp_login/tpr";
             } else {
                 errorMessageElement.textContent = "Invalid username or password";
             }
         }
-    
-        // Function to handle logout
-        function logout() {
-            // Clear sessionStorage
-            sessionStorage.clear();
-            // Redirect to the login page
-            window.location.href = "login.html";
+        function home(){
+            window.location.href = "/";
+
         }
-    
         // Check if the user is already logged in when the page loads
-        window.onload = function() {
-            var loggedIn = sessionStorage.getItem("loggedIn");
-            if (loggedIn === "true") {
+        {% comment %} window.onload = function() {
+            var sessionToken = localStorage.getItem("sessionToken");
+            if (sessionToken) {
                 // Redirect to the next page if already logged in
                 window.location.href = "TPR";
             }
-        };
+        }; {% endcomment %}
     
-        // Handle browser back and forward button navigation
-        window.onpopstate = function(event) {
-            var loggedIn = sessionStorage.getItem("loggedIn");
-            if (loggedIn !== "true") {
-                // Clear sessionStorage
-                sessionStorage.clear();
+        // Function to generate a random session token
+        function generateToken() {
+            // Generate a random alphanumeric string
+            return Math.random().toString(36).substr(2);
+        }
+
+
+
+
+        window.addEventListener('popstate', function(event) {
+            // Check if the user is navigating back
+            if (event.state && event.state.refresh) {
+                // Reload the page
+                location.reload();
             }
-        };
-        window.onload = function() {
-            // Check if the user tries to navigate forward
-            window.addEventListener("popstate", function(event) {
-                // Redirect the user back to the current page to prevent forward navigation
-                window.location.href = document.URL;
-            });
-        };
+        });
+        
+        // Function to add refresh state to history when navigating away
+        function addRefreshState() {
+            history.pushState({refresh: true}, document.title);
+        }
+        
+        // Example usage - You can call this function when the user clicks a link
+        document.getElementById('/emp_login').addEventListener('click', function() {
+            addRefreshState();
+            // Additional logic to navigate to the desired page
+        });
     </script>
-        </body>
+    
+ </body>
 </html>

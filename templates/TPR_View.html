@@ -122,15 +122,39 @@
                 padding: 8px 12px;
             }
         }
+        .cont1 {
+            display: flex;
+            justify-content: space-between; /* Aligns items to the right */
+            margin:2%;
+        
+          }
+            
+        #logoutButton {
+            background-color: #f44336; /* Red background color */
+            color: white; /* White text color */
+            padding: 10px 20px; /* Padding */
+            border: none; /* No border */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Cursor style */
+            height:3%;
+            width:6%;
+          
+          }
+          
+        #logoutButton:hover {
+            background-color: #df3a2e; /* Darker red background color on hover */
+          }
 
     </style>
 </head>
 
 <body>
     <!-- Add image at the top-left corner outside the container -->
-    <div class="logo">
+    <div class="logo cont1">
         <img src="{%static 'SKMLOGO1.png'  %}">
 
+        <button id="logoutButton" onclick="logout(); location.reload(true);
+        ">Logout</button>
 
     </div>
     <div class="container">
@@ -166,6 +190,23 @@
     </div>
 
     <script>
+        window.onload = function() {
+            var sessionToken = localStorage.getItem("sessionToken");
+            if (!sessionToken) {
+                // Redirect to the login page if not logged in
+                window.location.href = "/emp_login";
+                // Clear browser history
+                history.replaceState(null, null, '/emp_login'); 
+              }
+        };
+        function logout() {
+            // Clear session token from localStorage
+            localStorage.removeItem("sessionToken");
+            // Redirect to the login page
+            window.location.href = "/emp_login";
+            // Add logout entry to browser history
+            history.replaceState(null, null, ''); 
+        }
         function searchFunction() {
             const searchInput = document.getElementById("searchInput").value.toLowerCase();
             const rows = document.querySelectorAll("table tbody tr");
@@ -190,6 +231,26 @@
                 row.classList.toggle("hidden", !rowShouldBeVisible);
             });
         }
+
+
+        window.addEventListener('popstate', function(event) {
+            // Check if the user is navigating back
+            if (event.state && event.state.refresh) {
+                // Reload the page
+                location.reload();
+            }
+          });
+          
+          // Function to add refresh state to history when navigating away
+          function addRefreshState() {
+            history.pushState({refresh: true}, document.title);
+          }
+          
+          // Example usage - You can call this function when the user clicks a link
+          document.getElementById('/login/TPR').addEventListener('click', function() {
+            addRefreshState();
+            // Additional logic to navigate to the desired page
+          });
     </script>
 
 </body>
