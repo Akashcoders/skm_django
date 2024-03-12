@@ -1,0 +1,298 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Page</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .logo{
+            margin: 2%;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #cde5fb; /* Light Blue */
+            margin: 0;
+            padding: 0;
+         
+        }
+
+        .container {
+            background-color: #ffffff; /* White */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 800px;
+            margin: auto;
+            overflow-x: auto;
+            position: relative;
+            margin: auto;
+            margin-top:5%;
+        }
+
+        body::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.5); /* White with 0.5 opacity */
+            z-index: -1;
+        }
+
+        body::before {
+            content: "";
+            background-image: url({%static 'Steels.PNG'  %});
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            filter: blur(5px); /* Optional: Apply a slight blur to the background image */
+        }
+
+        .container {
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 800px;
+            margin: auto;
+            overflow-x: auto;
+            position: relative;
+            margin-top: 5%;
+            background-color: rgba(148, 209, 230, 0.5); /* Very light blue with 0.5 opacity */
+            z-index: 1; /* Ensure content appears above the background */
+        }
+
+        .search-icon {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        #searchInput {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        .srch-btn,
+        .tpr-add-btn {
+            text-decoration: none;
+            color: #fff;
+            background: linear-gradient(to right, #0080ff, #0066cc); /* Gradient Blue */
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .tpr-add-btn {
+            margin-left: 10px; /* Add spacing between buttons */
+        }
+
+        .srch-btn:hover,
+        .tpr-add-btn:hover {
+            background: linear-gradient(to right, #0066cc, #004080); /* Darker Gradient Blue */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th,
+        td {
+            border: 1px solid #dee2e6; /* Light Blue Gray */
+            padding: 15px;
+            text-align: left;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        th {
+            background-color: #0080ff; /* Gradient Blue */
+            color: #fff;
+            cursor: pointer;
+        }
+
+        tbody tr:hover {
+            background-color: #f2f9ff; /* Lighter Blue */
+        }
+
+        .pdf-view,
+        .delete-row {
+            color: #0080ff; /* Gradient Blue */
+            cursor: pointer;
+            text-decoration: underline;
+            transition: color 0.3s;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media only screen and (max-width: 600px) {
+            th,
+            td {
+                font-size: 14px;
+                padding: 12px;
+            }
+
+            .srch-btn,
+            .tpr-add-btn {
+                padding: 8px 12px;
+            }
+        }
+        .cont1 {
+            display: flex;
+            justify-content: space-between; /* Aligns items to the right */
+            margin:2%;
+        
+          }
+            
+        #logoutButton {
+            background-color: #f44336; /* Red background color */
+            color: white; /* White text color */
+            padding: 10px 20px; /* Padding */
+            border: none; /* No border */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Cursor style */
+            height:3%;
+            width:6%;
+          
+          }
+          
+        #logoutButton:hover {
+            background-color: #df3a2e; /* Darker red background color on hover */
+          }
+
+    </style>
+</head>
+
+<body>
+    <!-- Add image at the top-left corner outside the container -->
+    <div class="logo cont1">
+        <img src="{%static 'SKMLOGO1.png'  %}">
+
+        <button id="logoutButton" onclick="logout(); location.reload(true);
+        ">Logout</button>
+
+    </div>
+    <div class="container">
+        <div class="search-icon">
+            <input type="text" id="searchInput" placeholder="Search...">
+            <button onclick="searchFunction()" class="srch-btn">Search</button>
+            <!-- Remove the 'Add TPR' button for employee view -->
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>TPR Number</th>
+                    <th>Segment</th>
+                    <th>Customer</th>
+                    <th>PDF View</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in form_data %}
+                <tr>
+                    <td>{{ data.TPR_NO }}</td>
+                    <td>{{ data.segment }}</td>
+                    <td>{{ data.customer }}</td>
+                    <td>
+                        <!-- PDF View Option -->
+                        <a href="{{ data.pdf_file.url }}" target="_blank" class="pdf-view">View PDF</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        window.onload = function() {
+            var sessionToken = localStorage.getItem("sessionToken");
+            if (!sessionToken) {
+                // Redirect to the login page if not logged in
+                window.location.href = "/emp_login";
+                // Clear browser history
+                history.replaceState(null, null, '/emp_login'); 
+              }
+        };
+        function logout() {
+            // Clear session token from localStorage
+            localStorage.removeItem("sessionToken");
+            // Redirect to the login page
+            window.location.href = "/emp_login";
+            // Add logout entry to browser history
+            history.replaceState(null, null, ''); 
+        }
+        function searchFunction() {
+            const searchInput = document.getElementById("searchInput").value.toLowerCase();
+            const rows = document.querySelectorAll("table tbody tr");
+
+            rows.forEach(row => {
+                const cells = row.getElementsByTagName("td");
+                let rowShouldBeVisible = false;
+
+                if (searchInput === "") {
+                    // Show all rows when the search input is empty
+                    rowShouldBeVisible = true;
+                } else {
+                    Array.from(cells).forEach(cell => {
+                        const cellText = cell.textContent.toLowerCase();
+                        if (cellText.includes(searchInput)) {
+                            rowShouldBeVisible = true;
+                        }
+                    });
+                }
+
+                // Toggle the 'hidden' class based on visibility
+                row.classList.toggle("hidden", !rowShouldBeVisible);
+            });
+        }
+
+
+        window.addEventListener('popstate', function(event) {
+            // Check if the user is navigating back
+            if (event.state && event.state.refresh) {
+                // Reload the page
+                location.reload();
+            }
+          });
+          
+          // Function to add refresh state to history when navigating away
+          function addRefreshState() {
+            history.pushState({refresh: true}, document.title);
+          }
+          
+          // Example usage - You can call this function when the user clicks a link
+          document.getElementById('/login/TPR').addEventListener('click', function() {
+            addRefreshState();
+            // Additional logic to navigate to the desired page
+          });
+    </script>
+
+</body>
+
+</html>
