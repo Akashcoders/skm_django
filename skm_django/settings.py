@@ -76,11 +76,16 @@ WSGI_APPLICATION = 'skm_django.wsgi.application'
 #https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-     'default': {
-         'ENGINE': 'django.db.backends.sqlite3',
-         'NAME': BASE_DIR / 'db.sqlite3',
-     }
- }
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'skm_django',
+        'USER': 'root',
+        'PASSWORD': 'root',
+        'HOST': 'localhost',   # Or the hostname where your MySQL server is running
+        'PORT': '3306',        # MySQL default port
+    }
+}
+
 
 
 # Password validation
